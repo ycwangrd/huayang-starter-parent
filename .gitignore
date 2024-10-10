@@ -23,7 +23,4 @@ spy.log
 /project-starter/target/
 /shiro-redis/target/
 /huayang/uploadPath/
-.DS_Store
-huayang-admin/.DS_Store
-huayang-admin/src/.DS_Store
-huayang-admin/src/main/.DS_Store
+*/.DS_Store
