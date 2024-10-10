@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.3</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.huayang.product</groupId>
+    <artifactId>huayang-starter-parent</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>huayang-starter-parent</name>
+    <description>HUAYANG软件开发starter</description>
+    
+    <!-- 包含模块定义 -->
+    <modules>
+        <module>huayang-common</module>
+        <module>huayang-system</module>
+        <module>huayang-admin</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+        <!-- 定义web应用打包方式(默认是war,fastjar打包方式是jar) -->
+        <web.packaging.type>war</web.packaging.type>
+        <!-- 主启动类:打fastjar包时候必须正确配置,否则启动失败 -->
+        <start-class>com.huayang.project.StarterApplication</start-class>
+        <!-- mybatis-plus和动态数据源 -->
+        <mybatis-plus-boot.version>3.5.7</mybatis-plus-boot.version>
+        <!-- mybatis-plus-join-boot-starter -->
+        <mybatis-plus-join-boot.version>1.5.0</mybatis-plus-join-boot.version>
+        <dynamic-datasource-boot.version>4.3.1</dynamic-datasource-boot.version>
+        <pagehelper-boot.version>2.1.0</pagehelper-boot.version>
+        <!-- shiro和thymeleaf集成 -->
+        <apache-shiro.version>2.0.1</apache-shiro.version>
+        <!-- shiro与redis集成(基于开源代码修改) -->
+        <shiro-redis.version>3.3.3-SNAPSHOT</shiro-redis.version>
+        <!-- shiro-redis绑定了jedis版本，不能升级了 -->
+        <thymeleaf-extras-shiro.version>2.1.0</thymeleaf-extras-shiro.version>
+        <thymeleaf-extras-java8time.version>3.0.4.RELEASE</thymeleaf-extras-java8time.version>
+        <!-- 系统工具 -->
+        <oshi.version>6.6.2</oshi.version>
+        <alibaba-fastjson2.version>2.0.52</alibaba-fastjson2.version>
+        <!-- 工具包(6.0版本正式发布后再引入) -->
+        <hutool.version>5.8.32</hutool.version>
+        <dromara-hutool.version>6.0.0-M16</dromara-hutool.version>
+        <!-- 短信发送工具包 -->
+        <dromara-sms4j.version>3.3.2</dromara-sms4j.version>
+        <!-- 文档处理 -->
+        <apache-poi.version>5.3.0</apache-poi.version>
+        <alibaba-easyexcel.version>4.0.1</alibaba-easyexcel.version>
+        <!-- aspose -->
+        <aspose.version>19.4</aspose.version>
+        <!-- 模板 -->
+        <apache-velocity.version>2.3</apache-velocity.version>
+        <!-- 文档 -->
+        <knife4j.version>4.5.0</knife4j.version>
+        <!-- 工作流Flowable版本 -->
+        <flowable-boot.version>7.0.1</flowable-boot.version>
+    </properties>
+
+    <!-- 依赖声明 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- kingbase数据库驱动 -->
+            <dependency>
+                <groupId>cn.com.kingbase</groupId>
+                <artifactId>kingbase8</artifactId>
+                <version>8.6.0</version>
+            </dependency>
+
+            <!-- Shiro核心框架 -->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-core</artifactId>
+                <classifier>jakarta</classifier>
+                <version>${apache-shiro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-web</artifactId>
+                <classifier>jakarta</classifier>
+                <version>${apache-shiro.version}</version>
+            </dependency>
+            <!-- Shiro使用Spring框架 -->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring</artifactId>
+                <classifier>jakarta</classifier>
+                <version>${apache-shiro.version}</version>
+                <!-- 排除仍使用了javax.servlet的依赖 -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.shiro</groupId>
+                        <artifactId>shiro-web</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- shiro集成redis -->
+            <dependency>
+                <groupId>org.crazycake</groupId>
+                <artifactId>shiro-redis</artifactId>
+                <version>${shiro-redis.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.shiro</groupId>
+                        <artifactId>shiro-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- thymeleaf模板引擎和shiro框架的整合 -->
+            <dependency>
+                <groupId>com.github.theborakompanioni</groupId>
+                <artifactId>thymeleaf-extras-shiro</artifactId>
+                <version>${thymeleaf-extras-shiro.version}</version>
+            </dependency>
+            <!-- thymeleaf模板使用java8 time -->
+            <dependency>
+                <groupId>org.thymeleaf.extras</groupId>
+                <artifactId>thymeleaf-extras-java8time</artifactId>
+                <version>${thymeleaf-extras-java8time.version}</version>
+            </dependency>
+
+            <!-- 获取系统信息 -->
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core-java11</artifactId>
+                <version>${oshi.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus,mybatis-plus-join和动态数据源 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus-boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-stdlib</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-stdlib-jdk7</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.github.yulichang</groupId>
+                <artifactId>mybatis-plus-join-boot-starter</artifactId>
+                <version>${mybatis-plus-join-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+                <version>${dynamic-datasource-boot.version}</version>
+            </dependency>
+            <!-- pagehelper 分页插件 -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper-boot.version}</version>
+            </dependency>
+
+            <!-- hutool常用工具类 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <!-- TODO: 里程碑版本bug太多，暂时不用 -->
+            <dependency>
+                <groupId>org.dromara.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${dromara-hutool.version}</version>
+            </dependency>
+            <!-- 短信发送工具包 -->
+            <dependency>
+                <groupId>org.dromara.sms4j</groupId>
+                <artifactId>sms4j-spring-boot-starter</artifactId>
+                <version>${dromara-sms4j.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.squareup.okhttp3</groupId>
+                        <artifactId>okhttp</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>cn.hutool</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>fastjson</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- 阿里JSON解析器 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${alibaba-fastjson2.version}</version>
+            </dependency>
+
+            <!-- knife4j-spring-doc -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+
+            <!-- excel工具 -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${apache-poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${alibaba-easyexcel.version}</version>
+            </dependency>
+            <!-- aspose -->
+            <dependency>
+                <groupId>com.aspose</groupId>
+                <artifactId>aspose-cells</artifactId>
+                <version>${aspose.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspose</groupId>
+                <artifactId>aspose-words</artifactId>
+                <classifier>jdk17</classifier>
+                <version>${aspose.version}</version>
+            </dependency>
+
+            <!-- velocity代码生成使用模板 -->
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity-engine-core</artifactId>
+                <version>${apache-velocity.version}</version>
+            </dependency>
+
+            <!-- 工作流 -->
+            <dependency>
+                <groupId>org.flowable</groupId>
+                <artifactId>flowable-spring-boot-starter</artifactId>
+                <version>${flowable-boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- 通用工具-->
+            <dependency>
+                <groupId>com.huayang.product</groupId>
+                <artifactId>huayang-common</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </dependency>
+            <!-- 系统模块-->
+            <dependency>
+                <groupId>com.huayang.product</groupId>
+                <artifactId>huayang-system</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </dependency>
+            <!-- controller模块-->
+            <dependency>
+                <groupId>com.huayang.product</groupId>
+                <artifactId>huayang-admin</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <!-- hutool工具包 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+        <!-- sql日志打印组件 -->
+        <dependency>
+            <groupId>p6spy</groupId>
+            <artifactId>p6spy</artifactId>
+            <version>3.9.1</version>
+        </dependency>
+        <!-- 自动配置所有springbean,提升启动速度,不会加载lib包中的springbean -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-indexer</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <!-- 配置多环境打包 -->
+    <profiles>
+        <!--开发环境-->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <!--自定义的属性-->
+                <env>dev</env>
+            </properties>
+            <activation>
+                <!--如果不指定，则默认使用dev开发环境配置-->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <!-- 测试环境-->
+        <profile>
+            <id>test</id>
+            <properties>
+                <env>test</env>
+            </properties>
+        </profile>
+        <!--生产环境-->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <env>prod</env>
+            </properties>
+        </profile>
+        <!-- 轻量级jar包(lib,config,cms-admin.jar或者ROOT.jar) -->
+        <profile>
+            <id>fastjar</id>
+            <properties>
+                <env>prod</env>
+                <!-- fastjar打包方式,要设置成jar -->
+                <web.packaging.type>jar</web.packaging.type>
+            </properties>
+            <!-- 打JAR包，不包含依赖文件；显式剔除配置文件 -->
+            <build>
+                <plugins>
+                    <!-- 打jar包 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}/</outputDirectory>
+                            <excludes>
+                                <!-- cms-admin配置文件 -->
+                                <exclude>config/</exclude>
+                                <exclude>cms-*/</exclude>
+                                <exclude>db/</exclude>
+                                <exclude>i18n/</exclude>
+                                <!-- web配置文件 -->
+                                <exclude>static/</exclude>
+                                <exclude>templates/</exclude>
+                                <!-- 排除如下格式配置文件 -->
+                                <exclude>*.xml</exclude>
+                                <exclude>*.properties</exclude>
+                                <exclude>*.yml</exclude>
+                                <exclude>*.yaml</exclude>
+                                <!-- 日志配置和jrebel -->
+                                <exclude>logback-spring.xml</exclude>
+                                <exclude>**/rebel.xml</exclude>
+                                <exclude>**/.flattened-pom.xml</exclude>
+                            </excludes>
+                            <archive>
+                                <!-- 生成的jar中，包含pom.xml和pom.properties这两个文件 -->
+                                <addMavenDescriptor>false</addMavenDescriptor>
+                                <compress>true</compress><!-- 压缩 -->
+                                <!-- 生成MANIFEST.MF的设置 -->
+                                <manifest>
+                                    <!-- 指定jar启动入口类 -->
+                                    <mainClass>${start-class}</mainClass>
+                                    <addDefaultEntries>true</addDefaultEntries>
+                                    <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                    <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
+                                    <!-- 为依赖包添加路径, 这些路径会写在MANIFEST文件的Class-Path下:设置为false方便以后单独更新lib包 -->
+                                    <addClasspath>true</addClasspath>
+                                    <!-- MANIFEST.MF 中 Class-Path 各个依赖加入前缀 -->
+                                    <!--这个jar所依赖的jar包添加classPath的时候的前缀，需要 下面maven-dependency-plugin插件补充-->
+                                    <!--一定要找对目录，否则jar找不到依赖lib，前边加../是因为jar在bin下，而bin与lib是平级目录-->
+                                    <classpathPrefix>./lib/</classpathPrefix>
+                                    <!--这个属性特别关键，如果没有这个属性，有时候我们引用的包maven库 下面可能会有多个包，并且只有一个是正确的，
+                                    其余的可能是带时间戳的，此时会在classpath下面把那个带时间戳的给添加上去，然后我们 在依赖打包的时候，
+                                    打的是正确的，所以两头会对不上，报错。 -->
+                                    <useUniqueVersions>false</useUniqueVersions>
+                                </manifest>
+                                <manifestEntries>
+                                    <!-- 假如这个项目可能要引入一些外部资源，但是你打包的时候并不想把 这些资源文件打进包里面，这个时候你必须在
+                                    这边额外指定一些这些资源文件的路径,假如你的pom文件里面配置了 <scope>system</scope>,就是你依赖是你本地的
+                                    资源，这个时候使用这个插件，classPath里面是不会添加，所以你得手动把这个依赖添加进这个地方 -->
+                                    <!--MANIFEST.MF 中 Class-Path 加入自定义路径，多个路径用空格隔开 -->
+                                    <!--此处resources文件夹的内容，需要maven-resources-plugin插件补充上-->
+                                    <Class-Path>./config/</Class-Path>
+                                    <!-- 编译日期 -->
+                                    <Build-Time>${maven.build.timestamp}(UTC时间)</Build-Time>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </plugin>
+                    <!-- 复制lib -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-dependencies</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- 拷贝项目依赖包到指定目录下 -->
+                                    <outputDirectory>${project.build.directory}/${project.artifactId}/lib/</outputDirectory>
+                                    <!-- 是否排除间接依赖，间接依赖也要拷贝 -->
+                                    <excludeTransitive>false</excludeTransitive>
+                                    <!-- 是否跳过版本号 -->
+                                    <stripVersion>false</stripVersion>
+                                    <!-- 依赖范围 -->
+                                    <includeScope>runtime</includeScope>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- 用于复制指定的文件 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <!-- 复制和替换配置文件 -->
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/main/resources</directory>
+                                            <includes>
+                                                <include>config/</include>
+                                                <!-- 将如下格式配置文件拷贝 -->
+                                                <include>*.xml</include>
+                                                <include>*.properties</include>
+                                                <include>*.yml</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>**/rebel.xml</exclude>
+                                                <exclude>**/.flattened-pom.xml</exclude>
+                                            </excludes>
+                                            <!-- 开启资源过滤 -->
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                    <!-- 输出路径 -->
+                                    <outputDirectory>${project.build.directory}/${project.artifactId}/config/</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <!-- 复制静态资源(不过滤) -->
+                            <execution>
+                                <id>copy-static-resources</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/main/resources</directory>
+                                            <includes>
+                                                <include>**/*</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>config/</exclude>
+                                                <!-- mybatis的mapper文件也复制的话会重复:导致报错 -->
+                                                <exclude>mapper/</exclude>
+                                                <!-- 将如下格式配置文件拷贝 -->
+                                                <exclude>*.xml</exclude>
+                                                <exclude>*.properties</exclude>
+                                                <exclude>*.yml</exclude>
+                                                <exclude>**/rebel.xml</exclude>
+                                                <exclude>**/.flattened-pom.xml</exclude>
+                                            </excludes>
+                                            <!-- 开启资源过滤 -->
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                    <!-- 输出路径 -->
+                                    <outputDirectory>${project.build.directory}/${project.artifactId}/config/</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <!-- jar module打包配置 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive><!-- 存档 -->
+                        <addMavenDescriptor>true</addMavenDescriptor><!-- 添加maven 描述 -->
+                        <compress>true</compress><!-- 压缩 -->
+                        <manifest><!-- 配置清单（MANIFEST）-->
+                            <addClasspath>false</addClasspath><!-- 添加到classpath 开关 -->
+                            <addDefaultEntries>true</addDefaultEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
+                            <addExtensions>false</addExtensions>
+                            <!--是否使用唯一的时间戳快照版本而不是-SNAPSHOT版本。默认值为true-->
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                    </archive>
+                    <!-- 排除掉某些文件 -->
+                    <excludes>
+                        <exclude>**/.flattened-pom.xml</exclude>
+                        <exclude>**/rebel.xml</exclude>
+                        <exclude>**/.apifox-helper.properties</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!-- 发布源码到maven仓库中的插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <includePom>true</includePom>
+                    <excludeResources>false</excludeResources>
+                    <attach>true</attach>
+                    <excludes>
+                        <exclude>**/rebel.xml</exclude>
+                        <exclude>**/.flattened-pom.xml</exclude>
+                    </excludes>
+                    <archive><!-- 存档 -->
+                        <addMavenDescriptor>true</addMavenDescriptor><!-- 添加maven 描述 -->
+                        <compress>true</compress><!-- 压缩 -->
+                        <manifest><!-- 配置清单（MANIFEST）-->
+                            <addClasspath>false</addClasspath><!-- 添加到classpath 开关 -->
+                            <addDefaultEntries>true</addDefaultEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
+                            <addExtensions>false</addExtensions>
+                            <!--是否使用唯一的时间戳快照版本而不是-SNAPSHOT版本。默认值为true-->
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 创建原型的插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-archetype-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <archetypeGroupId>com.huayang.project</archetypeGroupId>
+                    <archetypeArtifactId>starter</archetypeArtifactId>
+                    <archetypeLanguages>java</archetypeLanguages>
+                    <!-- 版本定义：覆盖发布 -->
+                    <archetypeVersion>0.1-SNAPSHOT</archetypeVersion>
+                    <packageName>com.huayang.project</packageName>
+                    <archetypePostPhase>package</archetypePostPhase>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>create-from-project</goal>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <!-- 资源文件变量替换 -->
+        <resources>
+            <!-- 静态资源 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>config/**/*</exclude>
+                    <!-- 将如下格式配置文件拷贝 -->
+                    <exclude>*.xml</exclude>
+                    <exclude>*.properties</exclude>
+                    <exclude>*.yml</exclude>
+                    <exclude>*.yaml</exclude>
+                    <exclude>**/rebel.xml</exclude>
+                </excludes>
+                <!-- 开启资源过滤 -->
+                <filtering>false</filtering>
+            </resource>
+            <!-- 配置文件 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>config/**/*</include>
+                    <!-- 将如下格式配置文件拷贝 -->
+                    <include>*.xml</include>
+                    <include>*.properties</include>
+                    <include>*.yml</include>
+                    <include>*.yaml</include>
+                    <!-- 可能会有通过SPI注册的服务 -->
+                    <include>META-INF/**/*</include>
+                </includes>
+                <!-- 开启资源过滤 -->
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <!-- 发布的仓库地址 -->
+    <distributionManagement>
+        <repository>
+            <id>huayang-release</id>
+            <name>huayang-release</name>
+            <uniqueVersion>false</uniqueVersion>
+            <url>http://10.3.1.186:9991/repository/huayang-release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>huayang-snapshot</id>
+            <name>huayang-snapshot</name>
+            <uniqueVersion>false</uniqueVersion>
+            <url>http://10.3.1.186:9991/repository/huayang-snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <!-- 组织和开发者信息 -->
+    <organization>
+        <name>华洋海事中心有限公司</name>
+        <url>https://www.huayangmaritime.com.cn</url>
+    </organization>
+    <url>https://www.huayangmaritime.com.cn</url>
+    <developers>
+        <developer>
+            <id>huayanginfo</id>
+            <name>Internet Products Department</name>
+            <timezone>8</timezone>
+        </developer>
+    </developers>
+</project>
