@@ -1,0 +1,92 @@
+# 项目相关配置
+hmc:
+    # 名称
+    name: 华洋XX管理系统
+    # 版本
+    version: based-on-Ruoyi-4.7.9-boot3
+    # 实例演示开关
+    demoEnabled: true
+    # 文件路径
+    profile: ./huayang/uploadPath
+    # 获取ip地址开关
+    addressEnabled: true
+# 开发环境配置
+server:
+    # 服务器的HTTP端口，默认为80
+    port: 8080
+    servlet:
+        # 应用的访问路径
+        context-path: /project
+# Spring配置
+spring:
+    profiles:
+        include: base
+        active: @env@
+    # 文件上传
+    servlet:
+        multipart:
+            # 单个文件大小
+            max-file-size: 10MB
+            # 设置总上传的文件大小
+            max-request-size: 20MB
+    # flyway相关配置
+    flyway:
+        # 迁移脚本的位置，默认db/migration
+        locations: classpath:db/migration/mysql
+# 用户配置
+user:
+    password:
+        # 密码错误{maxRetryCount}次锁定10分钟
+        maxRetryCount: 5
+# PageHelper分页插件
+pagehelper:
+    helperDialect: mysql
+    supportMethodsArguments: true
+    params: count=countSql
+# Shiro
+shiro:
+    user:
+        # 登录地址
+        loginUrl: /login
+        # 权限认证失败地址
+        unauthorizedUrl: /unauth
+        # 首页地址
+        indexUrl: /index
+        # 验证码开关
+        captchaEnabled: true
+        # 验证码类型 math 数字计算 char 字符验证
+        captchaType: math
+    cookie:
+        # 设置Cookie的域名 默认空，即当前访问的域名
+        domain:
+        # 设置cookie的有效访问路径
+        path: /
+        # 设置HttpOnly属性
+        httpOnly: true
+        # 设置Cookie的过期时间，天为单位
+        maxAge: 30
+        # 设置密钥，务必保持唯一性（生成方式，直接拷贝到main运行即可）Base64.encodeToString(CipherUtils.generateNewKey(128, "AES").getEncoded()) （默认启动生成随机秘钥，随机秘钥会导致之前客户端RememberMe Cookie无效，如设置固定秘钥RememberMe Cookie则有效）
+        cipherKey:
+    session:
+        # Session超时时间，-1代表永不过期（默认30分钟）
+        expireTime: 90
+        # 相隔多久检查一次session的有效性，默认就是10分钟
+        validationInterval: 10
+        # 同一个用户最大会话数，比如2的意思是同一个账号允许最多同时两个人登录（默认-1不限制）
+        maxSession: -1
+        # 踢出之前登录的/之后登录的用户，默认踢出之前登录的用户
+        kickoutAfter: false
+    rememberMe:
+        # 是否开启记住我
+        enabled: true
+    # Shiro过滤连的配置(已经定义的:包括登录,注册,静态资源等等),其他自定义过滤连配置格式如下:/ruoyi/**=anon,/ajax/**=anon多个中间用逗号隔开(@Value限制)
+    filterChainDefinitions: 
+# 防止XSS攻击
+xss:
+    # 过滤开关
+    enabled: true
+    # 排除链接（多个用逗号分隔）
+    excludes: /system/notice/*
+    # 匹配链接
+    urlPatterns: /system/*,/monitor/*,/tool/*
+

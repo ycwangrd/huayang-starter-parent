@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.huayang.product</groupId>
+        <artifactId>huayang-starter-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <artifactId>huayang-admin</artifactId>
+    <packaging>jar</packaging>
+    <description>后台管理系统</description>
+
+    <dependencies>
+        <!-- SpringBoot集成thymeleaf模板 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <!-- thymeleaf页面上使用java8 time -->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-java8time</artifactId>
+        </dependency>
+
+        <!-- 核心模块:包含common包，framework框架，quartz定时任务，generator代码生成-->
+        <dependency>
+            <groupId>com.huayang.product</groupId>
+            <artifactId>huayang-system</artifactId>
+        </dependency>
+    </dependencies>
+</project>

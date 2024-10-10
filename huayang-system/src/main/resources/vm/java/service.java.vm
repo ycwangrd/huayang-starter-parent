@@ -1,0 +1,168 @@
+package ${packageName}.service;
+
+#if($table.tree)
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.huayang.product.common.core.domain.Ztree;
+#end
+
+import com.huayang.product.common.core.service.BaseService;
+import org.dromara.hutool.core.text.StrUtil;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.transaction.annotation.Transactional;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+
+/**
+ * ${functionName}Service业务层处理
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Service
+@Transactional(readOnly = true)
+public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${ClassName}> implements BaseService<${ClassName}> {
+    private static final String CACHE_NAME = "${className}";
+    /**
+     * 查询${functionName}列表
+     * 
+     * @param entity ${functionName}
+     * @return ${functionName}
+     */
+    public List<${ClassName}> selectList(${ClassName} entity) {
+        LambdaQueryWrapper<${ClassName}> queryWrapper = Wrappers.lambdaQuery();
+#foreach ($column in $columns)
+#if($column.isPk == '0')
+#if($column.javaType != 'Date' && $column.queryType == 'LIKE')
+        if (StrUtil.isNotBlank(entity.get$strUtil.upperFirst($column.javaField)())) {
+            queryWrapper.like(${ClassName}::get$strUtil.upperFirst($column.javaField), entity.get$strUtil.upperFirst($column.javaField)());
+        }
+#elseif($column.javaType != 'Date' && $column.queryType == 'EQ')
+        if (StrUtil.isNotBlank(entity.get$strUtil.upperFirst($column.javaField)())) {
+            queryWrapper.eq(${ClassName}::get$strUtil.upperFirst($column.javaField), entity.get$strUtil.upperFirst($column.javaField)());
+        }
+#end
+#end
+#end
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime')
+        // 创建日期查询条件
+        paramsTimeCondition(queryWrapper, ${ClassName}::getCreateTime, entity.getParams());
+#end
+#end
+        return list(queryWrapper);
+    }
+    
+#if($pkColumn)
+    /**
+     * 查询${functionName}
+     * 
+     * @param id ${functionName}主键
+     * @return ${functionName}
+     */
+    @Cacheable(value = CACHE_NAME, unless = "#result == null")
+    public ${ClassName} selectById(${pkColumn.javaType} id) {
+        return getById(id);
+    }
+    
+    /**
+     * 新增${functionName}
+     * 
+     * @param entity ${functionName}
+     * @return 结果
+     */
+    @CacheEvict(value = CACHE_NAME, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insert(${ClassName} entity) {
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime')
+        ${className}.setCreateTime(DateUtils.getNowDate());
+#end
+#end
+        return save(entity);
+    }
+
+    /**
+     * 修改${functionName}
+     * 
+     * @param entity ${functionName}
+     * @return 结果
+     */
+    @CacheEvict(value = CACHE_NAME, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean update(${ClassName} entity) {
+#foreach ($column in $columns)
+#if($column.javaField == 'updateTime')
+        ${className}.setUpdateTime(DateUtils.getNowDate());
+#end
+#end
+        return updateById(entity);
+    }
+
+    /**
+     * 批量删除${functionName}
+     * 
+     * @param ids 需要删除的${functionName}主键
+     * @return 结果
+     */
+    @CacheEvict(value = CACHE_NAME, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteByIds(String ids) {
+        return removeByIds(Arrays.asList(Convert.toStrArray(ids));
+    }
+
+    /**
+     * 删除${functionName}信息
+     * 
+     * @param id ${functionName}主键
+     * @return 结果
+     */
+    @CacheEvict(value = CACHE_NAME, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteById(${pkColumn.javaType} id) {
+        return removeById(id);
+    }
+#if($table.tree)
+
+    /**
+     * 查询${functionName}树列表
+     * 
+     * @return 所有${functionName}信息
+     */
+    @Override
+    public List<Ztree> selectTree() {
+        List<${ClassName}> ${className}List = list();
+        List<Ztree> ztrees = new ArrayList<Ztree>();
+        for (${ClassName} ${className} : ${className}List) {
+            Ztree ztree = new Ztree();
+#if($treeCode.length() > 2 && $treeCode.substring(1,2).matches("[A-Z]"))
+#set($TreeCode=$treeCode)
+#else
+#set($TreeCode=$treeCode.substring(0,1).toUpperCase() + ${treeCode.substring(1)})
+#end
+#if($treeParentCode.length() > 2 && $treeParentCode.substring(1,2).matches("[A-Z]"))
+#set($TreeParentCode=$treeParentCode)
+#else
+#set($TreeParentCode=$treeParentCode.substring(0,1).toUpperCase() + ${treeParentCode.substring(1)})
+#end
+#if($treeName.length() > 2 && $treeName.substring(1,2).matches("[A-Z]"))
+#set($TreeName=$treeName)
+#else
+#set($TreeName=$treeName.substring(0,1).toUpperCase() + ${treeName.substring(1)})
+#end
+            ztree.setId(${className}.get${TreeCode}());
+            ztree.setpId(${className}.get${TreeParentCode}());
+            ztree.setName(${className}.get${TreeName}());
+            ztree.setTitle(${className}.get${TreeName}());
+            ztrees.add(ztree);
+        }
+        return ztrees;
+    }
+#end
+#end
+}

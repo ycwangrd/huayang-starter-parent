@@ -1,0 +1,221 @@
+server:
+    tomcat:
+        # tomcat的URI编码
+        uri-encoding: UTF-8
+        # #最大连接数，默认为8192
+        max-connections: 8192
+        # 连接数满后的排队数，默认为100
+        accept-count: 1000
+        threads:
+            # tomcat最大线程数，默认为200
+            max: 800
+            # Tomcat启动初始化的线程数，默认值10
+            min-spare: 100
+        # 任何HTTP POST请求中表单内容的最大大小 
+        max-http-form-post-size: -1
+        # 要吞咽的最大请求正文量
+        max-swallow-size: 512MB
+        #  静态资源属性。
+        resource:
+            allow-caching: true
+            cache-ttl: 72h
+    # undertow 配置
+    undertow:
+        # HTTP post内容的最大大小。当值为-1时，默认值为大小是无限的
+        max-http-post-size: -1
+        # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
+        # 每块buffer的空间大小,越小的空间被利用越充分
+        buffer-size: 512
+        # 是否分配的直接内存
+        direct-buffers: true
+        threads:
+            # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+            io: 8
+            # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+            worker: 256
+        # 最大参数个数:默认1000个
+        max-parameters: 8192
+        url-charset: UTF-8
+# 日志配置
+logging:
+    config: classpath:logback-spring.xml
+# Spring配置
+spring:
+    # 缓存配置
+    cache:
+        type: redis
+        redis:
+            cache-null-values: true
+    data:
+        # redis配置
+        redis:
+            client-type: lettuce
+            timeout: 1000
+            lettuce:
+                pool:
+                    enabled: true
+                    max-active: 20
+                    max-wait: -1
+                    min-idle: 5
+                    max-idle: 10
+                    time-between-eviction-runs: 1000
+                shutdown-timeout: 100ms
+            jedis:
+                pool:
+                    enabled: true
+                    max-active: 20
+                    max-wait: -1ms
+                    min-idle: 5
+                    max-idle: 10
+                    time-between-eviction-runs: 1000
+    # 数据源相关配置
+    datasource:
+        type: com.zaxxer.hikari.util.DriverDataSource
+        hikari:
+            pool-name: hmc-starter
+            maximum-pool-size: 150
+    # flyway相关配置
+    flyway:
+        # 如果启动的时候需要flyway管理sql脚本的话，将enabled设置为true
+        enabled: true
+        # 如果数据库不是空表，需要设置成 true，否则启动报错
+        baseline-on-migrate: true
+        # 表示是否禁用要清除已有库下的表
+        clean-disabled: true
+        # 验证错误时 是否自动清除数据库 高危操作!
+        clean-on-validation-error: false
+        # 基准版本号
+        baseline-version: 1.0.0
+        # 对执行迁移时基准版本的描述
+        baseline-description: "<< Flyway Baseline >>"
+        # 无序迁移
+        out-of-order: false
+        # 设置迁移时的编码
+        encoding: UTF-8
+        # 迁移时是否校验
+        validate-on-migrate: true
+        # 脚本执行人员
+        installed-by: huayang
+        # flyway执行记录表名
+        table: "flyway_schema_history"
+    # jackson配置
+    jackson:
+        time-zone: GMT+8
+        date-format: yyyy-MM-dd HH:mm:ss
+    # 资源信息
+    messages:
+        # 国际化资源文件路径
+        basename: static/i18n/messages
+        encoding: UTF-8
+    # session配置
+    session:
+        timeout: 90m
+        redis:
+            save-mode: on_set_attribute
+            flush-mode: on_save
+            namespace: spring:session
+    # 文件上传
+    servlet:
+        multipart:
+            # 单个文件大小
+            max-file-size: 10MB
+            # 设置总上传的文件大小
+            max-request-size: 20MB
+    # 模板引擎
+    thymeleaf:
+        enabled: true
+        encoding: utf-8
+        # 禁用缓存
+        cache: false
+        mode: HTML
+        prefix: classpath:/templates/
+        suffix: .html
+        servlet:
+            content-type: text/html
+        # 开启el表达式解析
+        enable-spring-el-compiler: true
+# MyBatis Plus配置
+mybatis-plus:
+    # 搜索指定包别名
+    type-aliases-package: com.huayang.**.domain,com.huayang.**.entity
+    # 配置mapper的扫描，找到所有的mapper.xml映射文件
+    mapper-locations: classpath*:mapper/**/*Mapper.xml
+    configuration:
+        # 配置MyBatis缓存
+        cache-enabled: true
+        # 允许JDBC 支持自动生成主键
+        use-generated-keys: true
+        # 配置默认的执行器.SIMPLE就是普通执行器;REUSE执行器会重用预处理语句(prepared statements);BATCH执行器将重用语句并执行批量更新
+        default-executor-type: SIMPLE
+        # 指定 MyBatis 所用日志的具体实现
+        log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+        # 指定当检索的值为null时，是否将调用setter或map的put方法。当您依赖Map.keySet()或null值初始化时，它很有用。注意：（int，boolean等）等原语不会设置为null。默认值为 false。
+        call-setters-on-nulls: true
+        # 转驼峰命名
+        map-underscore-to-camel-case: true
+    global-config:
+        # 开启SqlRunner.db()直接执行sql(动态数据源的在service中执行)
+        enable-sql-runner: true
+# PageHelper分页插件
+pagehelper:
+    async-count: true
+    params: count=countSql
+    auto-dialect: true
+    reasonable: true
+# Shiro
+shiro:
+    user:
+        # 登录地址
+        loginUrl: /login
+        # 权限认证失败地址
+        unauthorizedUrl: /unauth
+        # 首页地址
+        indexUrl: /index
+        # 验证码开关
+        captchaEnabled: true
+        # 验证码类型 math 数字计算 char 字符验证
+        captchaType: math
+    cookie:
+        # 设置Cookie的域名 默认空，即当前访问的域名
+        domain:
+        # 设置cookie的有效访问路径
+        path: /
+        # 设置HttpOnly属性
+        httpOnly: true
+        # 设置Cookie的过期时间，天为单位
+        maxAge: 30
+        # 设置密钥，务必保持唯一性（生成方式，直接拷贝到main运行即可）Base64.encodeToString(CipherUtils.generateNewKey(128, "AES").getEncoded()) （默认启动生成随机秘钥，随机秘钥会导致之前客户端RememberMe Cookie无效，如设置固定秘钥RememberMe Cookie则有效）
+        cipherKey:
+    session:
+        # Session超时时间，-1代表永不过期（默认30分钟）
+        expireTime: 30
+        # 同步session到数据库的周期（默认1分钟）
+        dbSyncPeriod: 1
+        # 相隔多久检查一次session的有效性，默认就是10分钟
+        validationInterval: 10
+        # 同一个用户最大会话数，比如2的意思是同一个账号允许最多同时两个人登录（默认-1不限制）
+        maxSession: -1
+        # 踢出之前登录的/之后登录的用户，默认踢出之前登录的用户
+        kickoutAfter: false
+    rememberMe:
+        # 是否开启记住我
+        enabled: true
+# Springdoc配置
+springdoc:
+    api-docs:
+        enabled: true
+        path: /v3/api-docs
+        version: openapi_3_1
+        groups:
+            enabled: true
+    packages-to-scan: 
+        - com.huayang.**.controller
+    swagger-ui:
+        enabled: true
+        path: /swagger-ui.html
+        tags-sorter: alpha
+    group-configs:
+        -   group: 'default'
+            display-name: 接口分组
+            paths-to-match: '/**'
+            packages-to-scan: com.huayang.**.controller

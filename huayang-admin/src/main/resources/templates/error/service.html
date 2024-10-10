@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <th:block th:insert="~{include :: header('操作异常')}" />
+</head>
+<body class="gray-bg">
+    <div class="middle-box text-center animated fadeInDown">
+        <h3 class="font-bold">操作异常！</h3>
+
+        <div class="error-desc">
+            [[${errorMessage}]]
+        </div>
+    </div>
+</body>
+</html>

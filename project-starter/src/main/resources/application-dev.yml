@@ -1,0 +1,24 @@
+# spring配置
+spring:
+    # 数据源配置
+    datasource:
+        dynamic:
+            p6spy: true
+            primary: master
+            datasource:
+                master:
+                    driverClassName: com.mysql.cj.jdbc.Driver
+                    url: jdbc:mysql://10.3.1.185:3308/hmc_starter?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false
+                    username: root
+                    password: andgsQW#
+                    #driverClassName: com.kingbase8.Driver
+                    #url: jdbc:kingbase8://10.3.1.11:54321/hmc_starter?searchpath=hmc_starter
+                    #username: hmc_cms_starter
+                    #password: cnss#dbok
+    data:
+        # redis配置(pool信息已在base中配置)
+        redis:
+            host: 10.3.1.186
+            port: 6379
+            password: andgsQW#
+            database: 15
