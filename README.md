@@ -1,9 +1,8 @@
 # huayang-starter-parent
 ### 1. 特殊说明：
-1. [hmc-flowable7-ui](hmc-flowable7-ui)和[shiro-redis](shiro-redis)不是产品的模块，而是两个独立的东西；
-2. [shiro-redis](shiro-redis)是由于中央仓库中的代码对新版jedis兼容性问题，进行代码修改后发布私服的源码；
-3. [hmc-flowable7-ui](hmc-flowable7-ui)是由于flowable7没有ui了，此代码提供基本的流程设计，是一个独立的应用程序；
-4. 项目中引入hutool包的6.0.0里程碑版本,尽量不要使用(在确保没有问题的情况下可以使用,优先使用旧版本,等未来6.x正式版本发布后再推荐使用)
+1. [shiro-redis](shiro-redis)是由于中央仓库中的代码对新版jedis兼容性问题，进行代码修改后发布私服的源码；
+2. [hmc-flowable7-ui](hmc-flowable7-ui)是由于flowable7没有ui了，此代码提供基本的流程设计，是一个独立的应用程序；
+3. 项目中引入hutool包的6.0.0里程碑版本,尽量不要使用(在确保没有问题的情况下可以使用,优先使用旧版本,等未来6.x正式版本发布后再推荐使用)
 ### 2. 基于若依RuoYi v4.7.9-springboot3.0版本创建的原型功能：
 #### 2.1 项目源代码地址：https://gitee.com/y_project/RuoYi/tree/springboot3/
 #### 2.2 已经实现了如下集成：
