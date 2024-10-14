@@ -649,17 +649,4 @@
             <url>http://10.3.1.186:9991/repository/huayang-snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
-    <!-- 组织和开发者信息 -->
-    <organization>
-        <name>华洋海事中心有限公司</name>
-        <url>https://www.huayangmaritime.com.cn</url>
-    </organization>
-    <url>https://www.huayangmaritime.com.cn</url>
-    <developers>
-        <developer>
-            <id>huayanginfo</id>
-            <name>Internet Products Department</name>
-            <timezone>8</timezone>
-        </developer>
-    </developers>
 </project>
